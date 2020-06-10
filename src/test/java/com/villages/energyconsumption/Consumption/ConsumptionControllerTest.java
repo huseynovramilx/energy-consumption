@@ -15,13 +15,16 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -55,13 +58,18 @@ class ConsumptionControllerTest {
     @Test
     void getConsumptionReport() throws Exception {
         String duration = "24h";
-        List<ConsumptionReport> consumptionReports = new ArrayList<>();
-        when(consumptionService.getConsumptionReport(any(String.class))).thenReturn(consumptionReports);
+        ConsumptionReport[] consumptionReports = new ConsumptionReport[]{
+                new ConsumptionReport("Villa", 10000.20),
+                new ConsumptionReport("Venna", 1000.25)
+        };
+        List<ConsumptionReport> expectedConsumptionReports = Arrays.asList(consumptionReports);
+        when(consumptionService.getConsumptionReport(any(String.class))).thenReturn(expectedConsumptionReports);
 
         mockMvc.perform(get("/consumption_report")
                 .param("duration", duration)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andExpect(jsonPath("$").value(consumptionReports));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @Test
@@ -70,7 +78,7 @@ class ConsumptionControllerTest {
         ConsumptionDTO consumptionDTO = new ConsumptionDTO(5.98f);
         consumptionDTO.setCounter_id(1);
         Consumption consumption = new Consumption(5.98f, dateTime);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
         when(consumptionService.addConsumption(any(Integer.class), any(Float.class), any(LocalDateTime.class)))
                 .thenReturn(consumption);
@@ -80,7 +88,7 @@ class ConsumptionControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.amount").value(consumption.getAmount()))
-                .andExpect(jsonPath("$.dateTime").value((formatter.format(consumption.getDateTime()))));
+                .andExpect(jsonPath("$.dateTime").value(containsString(formatter.format(consumption.getDateTime()))));
     }
 
     @Test
