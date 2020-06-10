@@ -22,9 +22,4 @@ public class VillageController {
     Village addVillage(@RequestBody Village village){
         return villageService.addVillage(village);
     }
-
-    @PostMapping("/villages/{id}")
-    Counter addCounter(@PathVariable Integer id){
-        return villageService.addCounter(id);
-    }
 }

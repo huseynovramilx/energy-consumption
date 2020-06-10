@@ -2,6 +2,8 @@ package com.villages.energyconsumption.Consumption;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 public class ConsumptionController {
     private final ConsumptionService consumptionService;
@@ -17,6 +19,6 @@ public class ConsumptionController {
 
     @PostMapping("/counter_callback")
     Consumption addConsumption(@RequestBody ConsumptionDTO consumptionDTO){
-        return consumptionService.addConsumption(consumptionDTO.getCounter_id(), consumptionDTO.getAmount());
+        return consumptionService.addConsumption(consumptionDTO.getCounter_id(), consumptionDTO.getAmount(), LocalDateTime.now());
     }
 }
