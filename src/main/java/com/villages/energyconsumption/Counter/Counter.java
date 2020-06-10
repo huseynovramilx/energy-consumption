@@ -7,12 +7,14 @@ import com.villages.energyconsumption.Village.Village;
 import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Counter {
     @Id
+    @Column(unique = true)
     private Integer id;
 
     @JsonManagedReference
@@ -39,14 +41,14 @@ public class Counter {
         return consumptionList;
     }
 
-    public Counter(Integer id, Village village) {
+    public Counter(Integer id, Village village, LocalDateTime dateTime) {
         this.id = id;
         this.village = village;
-        this.addConsumption(new Consumption(0.0f));
+        this.addConsumption(new Consumption(0.0f, dateTime));
     }
 
     public Counter(){
-        this.addConsumption(new Consumption(0.0f));
+        this.addConsumption(new Consumption(0.0f, LocalDateTime.now()));
     }
 
     public Village getVillage() {
@@ -60,5 +62,4 @@ public class Counter {
     public Integer getId() {
         return id;
     }
-
 }

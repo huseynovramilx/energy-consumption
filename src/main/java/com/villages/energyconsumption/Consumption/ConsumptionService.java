@@ -3,6 +3,7 @@ package com.villages.energyconsumption.Consumption;
 import com.villages.energyconsumption.Counter.Counter;
 import com.villages.energyconsumption.Counter.CounterNotFoundException;
 import com.villages.energyconsumption.Counter.CounterRepository;
+import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -27,12 +28,12 @@ public class ConsumptionService {
         return consumptionRepository.consumptionReport(dateTime);
     }
 
-    public Consumption addConsumption(Integer counter_id, Float amount) {
+    public Consumption addConsumption(Integer counter_id, Float amount, LocalDateTime dateTime) {
         Optional<Counter> optionalCounter = counterRepository.findById(counter_id);
         if(optionalCounter.isEmpty()){
             throw new CounterNotFoundException(counter_id);
         }
-        Consumption consumption = new Consumption(amount);
+        Consumption consumption = new Consumption(amount, dateTime);
         consumption.setCounter(optionalCounter.get());
         consumptionRepository.save(consumption);
         return consumption;

@@ -23,12 +23,11 @@ public class Consumption {
     @ManyToOne(fetch = FetchType.LAZY)
     private Counter counter;
 
-    public Consumption(Float amount){
+    public Consumption(Float amount, LocalDateTime dateTime){
         this.amount = amount;
-        this.dateTime = LocalDateTime.now();
+        this.dateTime = dateTime;
     }
     public Consumption() {
-        this.dateTime = LocalDateTime.now();
     }
 
     public void setCounter(Counter counter) {

@@ -21,18 +21,6 @@ public class VillageService {
         return villageRepository.findAll();
     }
 
-    public Counter addCounter(Integer villageId){
-        Optional<Village> optionalVillage = villageRepository.findById(villageId);
-        if(optionalVillage.isEmpty()){
-            throw new VillageNotFoundException(villageId);
-        }
-         Village village = optionalVillage.get();
-         Counter counter = new Counter();
-         village.addCounter(counter);
-         villageRepository.saveAndFlush(village);
-         return counter;
-    }
-
     public Village addVillage(Village village){
         villageRepository.save(village);
         return village;

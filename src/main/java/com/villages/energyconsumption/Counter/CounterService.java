@@ -8,6 +8,7 @@ import com.villages.energyconsumption.Village.VillageRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -36,23 +37,12 @@ public class CounterService {
         return optionalCounter.get();
     }
 
-    public Consumption addConsumption(Integer counterId, Float amount){
-        Optional<Counter> optionalCounter = counterRepository.findById(counterId);
-        if(optionalCounter.isEmpty()){
-            throw new CounterNotFoundException(counterId);
-        }
-        Counter counter = optionalCounter.get();
-        Consumption consumption = new Consumption(amount);
-        counterRepository.save(counter);
-        return consumption;
-    }
-
-    public Counter addCounter(Integer counterId, Integer villageId) {
+    public Counter addCounter(Integer counterId, Integer villageId, LocalDateTime dateTime) {
         Optional<Village> optionalVillage = villageRepository.findById(villageId);
         if(optionalVillage.isEmpty()){
             throw new VillageNotFoundException(villageId);
         }
-        Counter counter = new Counter(counterId, optionalVillage.get());
+        Counter counter = new Counter(counterId, optionalVillage.get(), dateTime);
         counterRepository.saveAndFlush(counter);
         consumptionRepository.save(counter.getConsumptionList().get(0));
         return counter;

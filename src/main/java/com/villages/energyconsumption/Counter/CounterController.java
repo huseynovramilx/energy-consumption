@@ -6,6 +6,8 @@ import com.villages.energyconsumption.Village.Village;
 import com.villages.energyconsumption.Village.VillageService;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 public class CounterController {
     private final CounterService counterService;
@@ -26,7 +28,7 @@ public class CounterController {
     }
     @PostMapping("/counters")
     CounterDTO addCounter(@RequestBody CounterInput counterInput){
-        Counter counter = counterService.addCounter(counterInput.getId(), counterInput.getVillageId());
+        Counter counter = counterService.addCounter(counterInput.getId(), counterInput.getVillageId(), LocalDateTime.now());
         return new CounterDTO(counter.getId(), counter.getVillage().getName());
     }
 }
